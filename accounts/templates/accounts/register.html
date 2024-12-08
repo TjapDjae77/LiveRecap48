@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% comment %} {% block title %}Register | LiveRecap48{% endblock %}
+
+{% block contents %}
+<div class="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Sign Up</h2>
+
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <p class="text-red-600 text-sm">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="mt-4">
+                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700">
+                    Register
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} {% endcomment %}
+
+{% block title %}Daftar | LiveRecap48{% endblock %}
+
+{% block contents %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white rounded-lg shadow-md w-full max-w-2xl grid grid-cols-1 md:grid-cols-2">
+        <!-- Left section -->
+        <div class="bg-cover bg-center hidden md:block rounded-l-lg" style="background-image: url('{% static "img/banner_regie.jpg" %}');">
+            <div class="bg-black bg-opacity-40 h-full flex flex-col justify-center items-center text-white">
+                <h1 class="text-2xl font-bold">LiveRecap48</h1>
+                <p class="mt-2">Bergabunglah dan nikmati konten eksklusif JKT48</p>
+            </div>
+        </div>
+
+        <!-- Right section -->
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-center text-gray-800">Buat Akunmu Sekarang</h2>
+            <p class="text-center text-sm text-gray-500 mb-6">Lengkapi data di bawah untuk bergabung di LiveRecap48.</p>
+
+            <form method="POST" action="{% url 'register' %}" id="register-form">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <!-- Email -->
+                    <div class="relative">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="relative">
+                        <label for="first_name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="relative">
+                        <label for="password1" class="block text-sm font-medium text-gray-700">Password</label>
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="relative">
+                        <label for="password2" class="block text-sm font-medium text-gray-700">Ketik Ulang Password</label>
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+
+                    {% if messages %}
+                        <div class="mb-4">
+                            {% for message in messages %}
+                                <p class="text-red-600 text-sm">{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Register Button -->
+                    <div>
+                        <button id="register-button" type="submit" class="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                            Daftar
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-500">
+                <p>
+                    Sudah memiliki akun?
+                    <a href="{% url "login" %}" class="text-indigo-600 hover:underline">Masuk</a>.
+                </p>
+            </div>
+
+            <div class="mt-8 text-xs text-gray-400 text-center">
+                <p>&copy; 2024 LiveRecap48. Semua Hak Dilindungi.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/register.js' %}"></script>
+{% endblock %}

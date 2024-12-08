@@ -1,0 +1,18 @@
+{
+  "name": "liverecap48",
+  "version": "1.0.0",
+  "description": "LiveRecap48 adalah aplikasi web untuk fans JKT48 yang menghadirkan transkripsi otomatis, navigasi timestamp, dan ringkasan live streaming. Dengan fitur personalisasi dan pengelolaan konten yang efisien, LiveRecap48 mempermudah fans menikmati momen terbaik bersama member favorit mereka.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:tailwind": "npx tailwindcss -i ./static/css/tailwind.css -o ./static/css/style.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16"
+  }
+}

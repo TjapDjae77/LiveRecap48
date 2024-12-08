@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% comment %} {% extends "base.html" %}
+{% load static %}
+
+{% block title %}LiveRecap48 - Discover JKT48 Moments{% endblock %}
+
+{% block contents %}
+<div class="min-h-screen bg-black text-white">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-gray-900 via-gray-800 to-black py-4 px-8">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-red-600">LiveRecap48</h1>
+            <div class="space-x-4">
+                <a href="{% url 'login' %}" class="text-white hover:underline">Login</a>
+                <a href="{% url 'register' %}" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative">
+        <div class="relative z-10 text-center py-32 bg-opacity-50 bg-gradient-to-b from-black to-transparent">
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-6">Discover Exclusive JKT48 Live Moments</h2>
+            <p class="text-lg md:text-xl mb-8">Relive, recap, and explore your favorite live streams and highlights in one place.</p>
+            <a href="#" class="bg-red-600 text-white px-6 py-3 text-lg rounded-full hover:bg-red-700">Get Started</a>
+        </div>
+        <div class="absolute inset-0 z-0">
+            <img src="{% static 'img/banner_regie.jpg' %}" alt="JKT48 Banner" class="w-full h-full object-cover">
+        </div>
+    </section>
+
+    <!-- Featured Content Section -->
+    <section class="py-12 px-8">
+        <h3 class="text-2xl font-semibold mb-6">Featured Highlights</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {% for video in featured_videos %}
+            <a href="#" class="block group">
+                <div class="relative">
+                    <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="rounded-lg shadow-md group-hover:opacity-75">
+                    <span class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">{{ video.duration }}</span>
+                </div>
+                <h4 class="text-sm mt-2 truncate">{{ video.title }}</h4>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6 px-8">
+        <p class="text-center text-gray-400 text-sm">&copy; 2024 LiveRecap48. All rights reserved.</p>
+    </footer>
+</div>
+{% endblock %} {% endcomment %}
+
+
+{% load static %}
+
+{% block title %}LiveRecap48 - Discover JKT48 Moments{% endblock %}
+
+{% block contents %}
+<div class="min-h-screen bg-black text-white">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-gray-900 via-gray-800 to-black py-4 px-8">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-red-600">LiveRecap48</h1>
+            <div class="space-x-4">
+                {% if user.is_authenticated %}
+                    <span>Welcome, {{ user.username }}</span>
+                    <a href="{% url 'account_logout' %}" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700">Login / Sign up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative">
+        <div class="relative z-10 text-center py-32 bg-opacity-50 bg-gradient-to-b from-black to-transparent">
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-6">Discover Exclusive JKT48 Live Moments</h2>
+            <p class="text-lg md:text-xl mb-8">Relive, recap, and explore your favorite live streams and highlights in one place.</p>
+            {% if user.is_authenticated %}
+                <a href="#" class="bg-red-600 text-white px-6 py-3 text-lg rounded-full hover:bg-red-700">Continue Watching</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="bg-red-600 text-white px-6 py-3 text-lg rounded-full hover:bg-red-700">Get Started</a>
+            {% endif %}
+        </div>
+        <div class="absolute inset-0 z-0">
+            <img src="{% static 'img/banner_regie.jpg' %}" alt="JKT48 Banner" class="w-full h-full object-cover">
+        </div>
+    </section>
+
+    <!-- Featured Content Section -->
+    <section class="py-12 px-8">
+        <h3 class="text-2xl font-semibold mb-6">Featured Highlights</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {% for video in featured_videos %}
+            <a href="#" class="block group">
+                <div class="relative">
+                    <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="rounded-lg shadow-md group-hover:opacity-75">
+                    <span class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">{{ video.duration }}</span>
+                </div>
+                <h4 class="text-sm mt-2 truncate">{{ video.title }}</h4>
+            </a>
+            {% empty %}
+            <p class="text-gray-400 text-center">No highlights available.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6 px-8">
+        <p class="text-center text-gray-400 text-sm">&copy; 2024 LiveRecap48. All rights reserved.</p>
+    </footer>
+</div>
+{% endblock %}
