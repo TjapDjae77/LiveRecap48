@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard | LiveRecap48{% endblock %}
+
+{% block contents %}
+<div class="flex min-h-screen bg-[#14171a]">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#2c2e31] p-4">
+        <h2 class="text-white text-2xl font-bold mb-4">Admin Dashboard</h2>
+        <nav>
+            <ul class="space-y-6">
+                <li>
+                    <a href="{% url 'home' %}" class="text-white">Upload</a>
+                </li>
+                <li>
+                    <a href="{% url 'manage_member' %}" class="text-gray-400 hover:text-white transition-colors">Members</a>
+                </li>
+                <li>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Analytics</a>
+                </li>
+                <li>
+                    <form method="post" action="{% url 'logout' %}" class="flex justify-center mt-5">
+                        {% csrf_token %}
+                        <button type="submit" class="w-1/2 py-1 mx-1 text-center rounded-lg bg-[#e8528d] text-white hover:bg-[#d4407d] transition-colors">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <h1 class="text-white text-4xl font-bold mb-4">Upload Video</h1>
+        <form method="POST" action="{% url 'upload_video' %}" class="bg-[#2c2e31] p-4 rounded-lg">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="title" class="text-white">Video Title:</label>
+                <input type="text" name="title" id="title" class="w-full p-2 rounded" required>
+            </div>
+            <div class="mb-4">
+                <label for="url" class="text-white">YouTube URL:</label>
+                <input type="url" name="url" id="url" class="w-full p-2 rounded" required>
+            </div>
+            <div class="mb-4">
+                <label for="member" class="text-white">Select Member:</label>
+                <select name="member" id="member" class="w-full p-2 rounded" required>
+                    <option value="">Select a member</option>
+                    {% for member in members %}
+                        <option value="{{ member.id }}">{{ member.nickname }} JKT48</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="live_type" class="text-white">Live Type:</label>
+                <select name="live_type" id="live_type" class="w-full p-2 rounded" required>
+                    <option value="sr">Live Showroom</option>
+                    <option value="idn">Live IDN</option>
+                </select>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Video</button>
+        </form>
+    </main>
+</div>
+{% endblock contents %}

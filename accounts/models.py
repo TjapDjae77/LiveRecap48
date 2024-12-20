@@ -21,6 +21,7 @@ class Account(models.Model):
         editable=False
     )
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Relasi One-to-One dengan User
+    profile_picture = models.ImageField(upload_to='accounts/img/profile_pictures', blank=True, null=True)
     favorite_members = models.ManyToManyField(Member, blank=True, related_name='fans')
 
     def __str__(self):

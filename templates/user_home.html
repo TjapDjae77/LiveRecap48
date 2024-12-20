@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}LiveRecap48 - Discover JKT48 Moments{% endblock %}
+
+{% block contents %}
+<div class="bg-[#14171a] min-h-screen">
+    <!-- Header -->
+    <header class="flex justify-between items-center px-4 lg:px-8 py-2 bg-[#2c2e31]">
+        <div class="flex items-center gap-4 lg:gap-8">
+            <!-- Mobile Menu Button -->
+            <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg transition-all duration-300 hover:bg-gray-700">
+                <img src="{% static 'img/menu.svg' %}" alt="Menu" class="w-6 h-6 text-white" />
+            </button>
+
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer" onclick="location.href='{% url 'home' %}'">
+                <img src="{% static 'img\LR48_Full Color.svg' %}" alt="LiveRecap48 Logo" class="h-8 lg:h-10" />
+                <span class="text-white text-xl lg:text-2xl font-bold">LiveRecap48</span>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden lg:flex gap-6">
+                <a href="{% url "member_inti" %}" class="text-gray-400 hover:text-white transition-colors pb-1">Member JKT48</a>
+                <a href="{% url "trainee" %}" class="text-gray-400 hover:text-white transition-colors pb-1">Trainee JKT48</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url "favorite_members" %}" class="text-gray-400 hover:text-white transition-colors">My Favorite Member</a>
+                {% endif %}
+             
+            </nav>
+        </div>
+
+        <!-- Mobile Navigation Sidebar -->
+        <div id="mobileSidebar" class="fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden bg-[#2c2e31] w-64 z-50">
+            <div class="p-6">
+                <button id="closeSidebarBtn" class="absolute top-4 left-4 p-2 rounded-lg transition-all duration-300 hover:bg-gray-700">
+                    <img src="{% static 'img/close.svg' %}" alt="Close" class="w-6 h-6 text-white" />
+                </button>
+
+                <div class="mt-12 mb-6">
+                    <div class="relative">
+                        <input
+                            type="text"
+                            placeholder="Cari"
+                            class="w-full pl-12 pr-4 py-2 bg-[#1a1d1f] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-[#e8528d] transition-colors"
+                        />
+                        <button class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <img src="{% static 'img/search.svg' %}" alt="Search" class="w-5 h-5 text-gray-400" />
+                        </button>
+                    </div>
+                </div>
+
+                <nav class="flex flex-col gap-4 mt-8">
+                    <a href="{% url "member_inti" %}" class="text-gray-400 hover:text-white transition-colors py-2">Member JKT48</a>
+                    <a href="{% url "trainee" %}" class="text-gray-400 hover:text-white transition-colors py-2">Trainee JKT48</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url "favorite_members" %}" class="text-gray-400 hover:text-white transition-colors py-2">My Favorite Member</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black opacity-50 hidden z-40"></div>
+
+        <!-- Search (hidden on mobile) -->
+        <div class="relative hidden lg:block mx-4 w-1/5 min-w-40">
+            <input
+                type="text"
+                placeholder="Cari"
+                class="w-full pl-12 pr-4 py-2 bg-[#2c2e31] border border-gray-500 rounded-lg text-white focus:outline-none focus:border-[#e8528d] transition-colors"
+            />
+            <button class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                <img src="{% static 'img/search.svg' %}" alt="Search" class="w-5 h-5 text-gray-400" />
+            </button>
+        </div>
+
+        <!-- Right Section -->
+        <div class="flex items-center gap-2 lg:gap-4">
+            
+            <!-- Theme Toggle -->
+            <div class="w-[37px] h-[37px] justify-center items-center flex">
+                <img class="w-[37px] h-[37px]" src="{% static 'img/Dark.svg' %}" />
+            </div>
+
+            <!-- User Menu -->
+            {% if user.is_authenticated %}
+                <div class="dropdown-container relative">
+                    <!-- Foto profil pengguna -->
+                    <button
+                        id="dropdownButton"
+                        class="flex items-center gap-2 px-2 py-1 rounded-lg"
+                    >
+                        <img
+                            src="{% if user.account.profile_picture %}{{ user.account.profile_picture.url }}{% else %}{% static 'img/default_profile.svg' %}{% endif %}"
+                            alt="Profile Picture"
+                            class="w-12 h-12 lg:w-[63px] lg:h-[63px] rounded-full object-cover"
+                        />
+                        <img
+                            id="expandIcon"
+                            src="{% static 'img/Expand.svg' %}"
+                            alt="Expand Icon"
+                            class="w-4 h-4 transition-transform duration-300"
+                        />
+                    </button>
+
+                    <!-- Dropdown menu -->
+                    <div
+                        id="dropdownMenu"
+                        class="hidden absolute right-0 top-full w-48 bg-white rounded-lg shadow-lg py-2 z-10"
+                    >   
+                        <div class="px-4 py-2 text-gray-700">
+                            Halo,
+                            <div class="font-bold inline">
+                                {% if user.username|length > 11 %}
+                                    {{ user.username|slice:":11" }}...
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                            </div> 
+                        </div>
+                        <hr class="border-1 border-black mx-3">
+                        <a
+                            href="{% url 'profile' user.username %}"
+                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        >
+                            Profil Saya
+                        </a>
+                        <div class="flex justify-center mt-2">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button
+                                    type="submit"
+                                    class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                                >
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <button
+                    onclick="location.href='{% url 'login' %}'"
+                    class="px-4 py-2 bg-[#e8528d] text-white rounded-lg hover:bg-[#d4407d] transition-colors"
+                >
+                    Login / Sign up
+                </button>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Thumbnail Carousel -->
+    <div class="relative overflow-hidden mb-2">
+        <div class="flex transition-transform duration-300" id="thumbnailSlider">
+            <!-- Thumbnails akan di-inject lewat JavaScript -->
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <button class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 p-2 rounded-full" id="prevBtn">
+            <img src="{% static 'img/Back.svg' %}" alt="Previous" class="w-6 h-6 text-white">
+        </button>
+        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 p-2 rounded-full" id="nextBtn">
+            <img src="{% static 'img/Back.svg' %}" alt="Next" class="w-6 h-6 text-white rotate-180">
+        </button>
+    </div>
+
+    <!-- Member JKT48 Section -->
+    <div class="px-4 lg:px-8 py-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-white text-2xl font-bold">Member JKT48</h2>
+            <a href="{% url 'member_inti' %}" class="text-[#e8528d] hover:text-[#ff69b4]">Lihat selengkapnya</a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for video in member_videos|slice:":3" %}
+            <div class="bg-[#1c1e21] rounded-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer" onclick="location.href='{% url 'video_details' video.id %}'">
+                <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="w-full aspect-video object-cover">
+                <div class="p-4">
+                    {% if video.live_type == 'idn' %}
+                        <span class="inline-block px-3 py-1 bg-[#e8528d] text-[#14171a] text-sm rounded-full mb-2">Live IDN</span>
+                    {% elif video.live_type == 'sr' %}
+                        <span class="inline-block px-3 py-1 bg-[#54c2f0] text-[#14171a] text-sm rounded-full mb-2">Live Showroom</span>
+                    {% endif %}
+                    <h3 class="text-white font-semibold mb-2">{{ video.title }}</h3>
+                    <p class="text-gray-400 text-sm">{{ video.date }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Trainee JKT48 Section -->
+    <div class="px-4 lg:px-8 py-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-white text-2xl font-bold">Trainee JKT48</h2>
+            <a href="{% url 'trainee' %}" class="text-[#e8528d] hover:text-[#ff69b4]">Lihat selengkapnya</a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for video in trainee_videos|slice:":3" %}
+            <div class="bg-[#1c1e21] rounded-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer" onclick="location.href='{% url 'video_details' video.id %}'">
+                <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="w-full aspect-video object-cover">
+                <div class="p-4">
+                    {% if video.live_type == 'idn' %}
+                        <span class="inline-block px-3 py-1 bg-[#e8528d] text-[#14171a] text-sm rounded-full mb-2">Live IDN</span>
+                    {% elif video.live_type == 'sr' %}
+                        <span class="inline-block px-3 py-1 bg-[#54c2f0] text-[#14171a] text-sm rounded-full mb-2">Live Showroom</span>
+                    {% endif %}
+                    <h3 class="text-white font-semibold mb-2">{{ video.title }}</h3>
+                    <p class="text-gray-400 text-sm">{{ video.date }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Carousel JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const thumbnails = [
+        '{% static "img/thumbnail1.svg" %}',
+        '{% static "img/thumbnail2.svg" %}',
+        '{% static "img/thumbnail3.svg" %}'
+    ];
+    
+    const slider = document.getElementById('thumbnailSlider');
+    let currentIndex = 0;
+    
+    // Initialize thumbnails
+    function initializeThumbnails() {
+        thumbnails.forEach(src => {
+            const div = document.createElement('div');
+            div.className = 'w-full flex-shrink-0';
+            div.innerHTML = `<img src="${src}" class="w-full h-[300px] object-cover">`;
+            slider.appendChild(div);
+        });
+    }
+    
+    // Handle navigation
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+        updateSlider();
+    });
+    
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % thumbnails.length;
+        updateSlider();
+    });
+    
+    function updateSlider() {
+        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+    
+    initializeThumbnails();
+});
+</script>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'js/landing_page.js' %}"></script>
+{% endblock scripts %}

@@ -17,5 +17,11 @@ COPY . .
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE main.settings
 
-# Jalankan aplikasi Django menggunakan server bawaan
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Jalankan perintah untuk mengumpulkan file statis
+RUN python manage.py collectstatic --noinput
+
+# Jalankan server Django menggunakan Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "main.wsgi:application"]
+
+# # Jalankan aplikasi Django menggunakan server bawaan
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

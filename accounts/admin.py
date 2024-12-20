@@ -26,7 +26,7 @@ class CustomUserAdmin(UserAdmin):
 # Customizing the Admin Interface for Account
 class AccountAdmin(admin.ModelAdmin):
     model = Account
-    list_display = ('user', 'get_favorite_members')
+    list_display = ('user', 'get_favorite_members', 'profile_picture')
     search_fields = ('user__username', 'user__email')
     ordering = ('user__username',)
 

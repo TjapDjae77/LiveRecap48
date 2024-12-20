@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Profile | LiveRecap48
+{% endblock title %}
+
+{% block contents %}
+<div class="min-h-screen bg-gray-100 py-8 px-4">
+    <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold mb-4">Profil Saya</h1>
+        <div class="flex items-center gap-4">
+            <img
+                src="{% if user.account.profile_picture %}{{ user.account.profile_picture.url }}{% else %}{% static 'img/default_profile.svg' %}{% endif %}"
+                alt="Profile Picture"
+                class="w-[63px] h-[63px] rounded-full object-cover"
+            />
+            <div>
+                <h2 class="text-xl font-semibold">{{ user_profile.username }}</h2>
+                <p class="text-gray-600">{{ user_profile.email }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}

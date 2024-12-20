@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+    Sign In with {{ provider.name }}
+{% endblock title %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">
+            Sign In with {{ provider.name }}
+        </h2>
+        <p class="text-center mb-6">
+            You are about to sign in using your {{ provider.name }} account.
+        </p>
+        <form method="post" class="flex flex-col gap-4">
+            {% csrf_token %}
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                Continue
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

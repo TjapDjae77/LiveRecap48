@@ -19,14 +19,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
-from .views import home
+from .views import landing_page
 
 urlpatterns = [
-    path('', home, name='home'),
+    path('', landing_page, name='home'),
     path('admin/', admin.site.urls),
-    path('auth/', include('accounts.urls')),
+    path('accounts/', include('accounts.urls')),
     path('accounts/', include('allauth.urls')),
-    # path('members/', include('members.urls')),
+    path("logout/", auth_views.LogoutView.as_view(next_page="/"), name="logout"),
+    path('members/', include('members.urls')),
+    path('manage/', include('manager.urls')),
+    path('videos/', include('videos.urls')),
 ]
 
 if settings.DEBUG:  # Hanya untuk tahap development

@@ -1,11 +1,28 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from members.models import Member
+from videos.models import Video
 
-def home(request):
-    # Data dummy untuk featured videos
-    featured_videos = [
-        {"id": 1, "title": "Live with Regie", "thumbnail_url": "/static/img/img1.jpg", "duration": "3:45"},
-        {"id": 2, "title": "Anime Talk", "thumbnail_url": "/static/img/img2.jpg", "duration": "5:12"},
-        {"id": 3, "title": "Chemistry Fun", "thumbnail_url": "/static/img/img3.jpg", "duration": "2:30"},
-        {"id": 4, "title": "Fan Meet & Greet", "thumbnail_url": "/static/img/img4.jpg", "duration": "6:00"},
-    ]
-    return render(request, 'index.html', {"featured_videos": featured_videos})
+def landing_page(request):
+    if request.user.is_authenticated:  # Memeriksa apakah pengguna sudah login
+        if request.user.is_superuser:  # Memeriksa apakah pengguna adalah admin
+            members = Member.objects.all().order_by('nickname')  # Ambil semua member
+            return render(request, 'admin_dashboard.html', {'members': members})
+        else:
+            member_videos = Video.objects.filter(member__type_member='inti').order_by('-created_at')[:3]
+            trainee_videos = Video.objects.filter(member__type_member='trainee').order_by('-created_at')[:3]
+            context = {
+                'user': request.user,
+                'member_videos': member_videos,
+                'trainee_videos': trainee_videos
+            }
+            return render(request, 'user_home.html', context)  # Tampilkan halaman pengguna biasa
+    else:
+        member_videos = Video.objects.filter(member__type_member='inti').order_by('-created_at')[:3]
+        trainee_videos = Video.objects.filter(member__type_member='trainee').order_by('-created_at')[:3]
+        context = {
+            'user': request.user,
+            'member_videos': member_videos,
+            'trainee_videos': trainee_videos
+        }
+        return render(request, 'user_home.html', context)  # Tampilkan halaman login jika belum login

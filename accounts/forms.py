@@ -8,67 +8,58 @@ class UserRegisterForm(UserCreationForm):
     username = forms.CharField(
         required=True,
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent',
+            'class': 'mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#54C2F0] focus:border-[#54C2F0] text-sm dark:bg-[#14171A] dark:text-white',
             'placeholder': 'Enter your username',
         })
     )
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent',
+            'class': 'mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#54C2F0] focus:border-[#54C2F0] text-sm dark:bg-[#14171A] dark:text-white',
             'placeholder': 'Enter your email',
-        })
-    )
-    first_name = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent',
-            'placeholder': 'Enter your first name',
-        })
-    )
-    last_name = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent',
-            'placeholder': 'Enter your last name',
         })
     )
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent',
+            'id': 'id_password1',
+            'class': 'mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-[#54C2F0] focus:border-[#54C2F0] text-sm dark:bg-[#14171A] dark:text-white',
             'placeholder': 'Enter your password',
         })
     )
     password2 = forms.CharField(
         label="Password confirmation",
         widget=forms.PasswordInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent',
+            'id': 'id_password2',
+            'class': 'mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-[#54C2F0] focus:border-[#54C2F0] text-sm dark:bg-[#14171A] dark:text-white',
             'placeholder': 'Confirm your password',
         })
     )
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2']
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
+            print(f"Email {email} already exists!") 
             raise forms.ValidationError('Email already registered. Please use a different email.')
         return email
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
         widget=forms.TextInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600',
+            'class': 'mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#54C2F0] focus:border-[#54C2F0] text-sm dark:bg-[#14171A] dark:text-white',
             'placeholder': 'Enter your email or username',
+            'id': 'id_username',
         })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
-            'class': 'border border-gray-300 p-2 w-full rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600',
+            'class': 'mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-[#54C2F0] focus:border-[#54C2F0] text-sm dark:bg-[#14171A] dark:text-white',
             'placeholder': 'Enter your password',
+            'id': 'id_password',
         })
     )
 

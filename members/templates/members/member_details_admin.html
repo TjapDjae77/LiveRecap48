@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detail Member: {{ member.nickname }}{% endblock %}
+
+{% block contents %}
+<style>
+    label, .form-label, .form-control {
+        color: white; /* Mengubah warna teks menjadi putih */
+    }
+</style>
+<div class="min-h-screen bg-[#14171a]">
+    <div class="container mx-auto p-6 bg-[#2c2e31] rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-white mb-4">Detail Member: {{ member.nickname }}</h1>
+
+        <div class="flex items-center mb-4">
+            <img src="{{ member.kabesha.url }}" alt="{{ member.name }}" class="w-1/4 rounded-lg mr-4">
+            <div class="text-white">
+                <h2 class="text-2xl font-bold">{{ member.name }}</h2>
+                <p class="flex items-center">
+                    Tempat lahir: {{ member.birthplace }}
+                </p>
+                <p class="flex items-center">
+                    Tanggal lahir: {{ member.birthdate }}
+                </p>
+                <p class="flex items-center">
+                    Golongan darah: {{ member.blood_type }}
+                </p>
+                <p class="flex items-center"> 
+                    Hobi: {{ member.hobbies|join:", " }}
+                </p>
+            </div>
+        </div>
+
+        <div class="text-white">
+            <p class="flex items-center">
+                <img src="{% static 'img/twitter.svg' %}" alt="Twitter" class="w-5 h-5 mr-2"> 
+                <a href="{{ member.twitter }}" target="_blank">{{ member.twitter|slice:"14:" }}</a>
+            </p>
+            <p class="flex items-center">
+                <img src="{% static 'img/instagram.svg' %}" alt="Instagram" class="w-5 h-5 mr-2"> 
+                <a href="{{ member.instagram }}" target="_blank">{{ member.instagram|slice:"26:"|slice:":-1" }}</a>
+            </p>
+            <p class="flex items-center">
+                <img src="{% static 'img/tiktok.svg' %}" alt="TikTok" class="w-5 h-5 mr-2"> 
+                <a href="{{ member.tiktok }}" target="_blank">{{ member.tiktok|slice:"24:" }}</a>
+            </p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-4 mt-6">
+            {% csrf_token %}
+            {{ form.as_p }}  <!-- Menampilkan form dengan styling yang lebih baik -->
+            <button type="submit" class="bg-[#e8528d] text-white px-4 py-2 rounded hover:bg-[#d4407d] transition">Update Member</button>
+        </form>
+
+        <a href="{% url 'manage_member' %}" class="mt-4 inline-block text-blue-400 hover:underline">Back to Members</a>
+    </div>
+    <h2 class="text-2xl font-bold text-white my-6">Video Member</h2>
+    <div class="container mx-auto p-6 bg-[#14171A] rounded-lg shadow-lg">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for video in videos %}
+                <div class="bg-[#2c2e31] rounded-lg p-4 overflow-hidden group cursor-pointer" onclick="location.href='{% url 'video_details' video.id %}'">
+                    <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="w-full h-auto rounded-lg mb-2">
+                    <div class="{% if video.live_type == 'sr' %}bg-[#54C2F0]{% else %}bg-[#E8528D]{% endif %} text-[#14171A] rounded-3xl px-2 py-1">{{ video.get_live_type_display }}</div>
+                    <h3 class="text-white">{{ video.title }}</h3>
+                </div>
+                {% empty %}
+                <p class="bg-[#2c2e31] rounded-lg p-4 text-white text-center">Tidak ada video yang tersedia.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

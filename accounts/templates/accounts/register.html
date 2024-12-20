@@ -32,7 +32,7 @@
 {% block title %}Daftar | LiveRecap48{% endblock %}
 
 {% block contents %}
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
+{% comment %} <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white rounded-lg shadow-md w-full max-w-2xl grid grid-cols-1 md:grid-cols-2">
         <!-- Left section -->
         <div class="bg-cover bg-center hidden md:block rounded-l-lg" style="background-image: url('{% static "img/banner_regie.jpg" %}');">
@@ -50,32 +50,40 @@
             <form method="POST" action="{% url 'register' %}" id="register-form">
                 {% csrf_token %}
                 <div class="space-y-4">
+                    <!-- Username -->
+                    <div class="relative">
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        {{ form.username }}
+                        <div class="text-red-600">
+                            {{ form.username.errors }}
+                        </div>
+                    </div>
+
                     <!-- Email -->
                     <div class="relative">
                         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                         {{ form.email }}
-                        {{ form.email.errors }}
-                    </div>
-
-                    <!-- Full Name -->
-                    <div class="relative">
-                        <label for="first_name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                        {{ form.first_name }}
-                        {{ form.first_name.errors }}
+                        <div class="text-red-600">
+                            {{ form.email.errors }}
+                        </div>
                     </div>
 
                     <!-- Password -->
                     <div class="relative">
                         <label for="password1" class="block text-sm font-medium text-gray-700">Password</label>
                         {{ form.password1 }}
-                        {{ form.password1.errors }}
+                        <div class="text-red-600">
+                            {{ form.password1.errors }}
+                        </div>
                     </div>
 
                     <!-- Confirm Password -->
                     <div class="relative">
                         <label for="password2" class="block text-sm font-medium text-gray-700">Ketik Ulang Password</label>
                         {{ form.password2 }}
-                        {{ form.password2.errors }}
+                        <div class="text-red-600">
+                            {{ form.password2.errors }}
+                        </div>
                     </div>
 
                     {% if messages %}
@@ -107,6 +115,107 @@
             </div>
         </div>
     </div>
+</div> {% endcomment %}
+<div class="min-h-screen bg-gray-100 dark:bg-[#14171A]">
+    <!-- Header -->
+    <header class="border-b-2 border-black dark:border-transparent bg-white dark:bg-[#2C2E31] relative">
+        <a href="{% url 'home' %}" class="absolute left-4 top-1/2 transform -translate-y-1/2">
+            <img src="{% static 'img/Go_Back.svg' %}" alt="Back" class="w-[70%] h-[70%] md:w-[90%] md:h-[90%] hover:opacity-70">
+        </a>
+        <div class="flex justify-center items-center py-2">
+            <img src="{% static 'img/LR48_Full Color.svg' %}" alt="Logo LiveRecap" class="max-w-10 md:max-w-10 m-2 inline-block">
+            <p class="font-bold text-xl md:text-3xl dark:text-white">LiveRecap48</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex flex-col align-middle items-center w-full p-6 {% if form.errors or messages %}mt-16{% else %}mt-24{% endif %}">
+        <h1 class="text-3xl font-medium text-[#333] dark:text-white mx-4 mb-3">Register</h1>
+
+        <!-- Form Section -->
+        <section class="m-4 w-full max-w-sm">
+            <form method="POST" action="{% url 'register' %}" class="w-full" id="register-form">
+                {% csrf_token %}
+                <!-- Username -->
+                <div class="m-2 mb-4">
+                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-white">Username</label>
+                    {{ form.username }}
+                    <div class="text-left mt-1 ml-1 text-sm text-[#EE1D52]">
+                        {{ form.username.errors }}
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="m-2 mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-white">Email address</label>
+                    {{ form.email }}
+                    <div class="text-left mt-1 ml-1 text-sm text-[#EE1D52]">
+                        {{ form.email.errors }}
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="m-2 mb-4">
+                    <label for="password1" class="block text-sm font-medium text-gray-700 dark:text-white">Password</label>
+                    <div class="relative">
+                        {{ form.password1 }}
+                        <div class="absolute right-3 top-3 text-gray-500 cursor-pointer" onclick="togglePasswordVisibility('id_password1')">
+                            <img src="{% static 'img/hide.svg' %}" alt="Hide Icon" class="w-5">
+                        </div>
+                    </div>
+                    <div class="text-left mt-1 ml-1 text-sm text-[#EE1D52]">
+                        {{ form.password1.errors }}
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="m-2 mb-4">
+                    <label for="password2" class="block text-sm font-medium text-gray-700 dark:text-white">Password confirmation</label>
+                    <div class="relative">
+                        {{ form.password2 }}
+                        <div class="absolute right-3 top-3 text-gray-500 cursor-pointer" onclick="togglePasswordVisibility('id_password2')">
+                            <img src="{% static 'img/hide.svg' %}" alt="Hide Icon" class="w-5">
+                        </div>
+                    </div>
+                    <div class="text-left mt-1 ml-1 text-sm text-[#EE1D52]">
+                        {{ form.password2.errors }}
+                    </div>
+                </div>
+
+                {% if messages %}
+                    <div class="m-2 mb-4">
+                        {% for message in messages %}
+                            {% if message.level == 40 %}
+                                <p class="text-[#EE1D52] text-sm">{{ message }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Register Button -->
+                <div class="m-2 mt-7">
+                    <button type="submit" class="w-full bg-[#54C2F0] dark:bg-[#54C2F0] font-medium text-xl text-white dark:text-white py-2 px-4 rounded-full hover:bg-[#0F7BA9] disabled:bg-gray-300 disabled:dark:bg-gray-600 disabled:dark:text-gray-400 disabled:cursor-not-allowed" id="register-button" disabled>
+                        Sign up
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Horizontal Line -->
+        <div class="w-full max-w-sm mt-2">
+            <hr class="border-t-2 border-gray-300">
+        </div>
+
+        <!-- Login Section -->
+        <section class="mt-4 w-full max-w-sm flex flex-col items-center">
+            <h2 class="font-medium text-2xl text-[#333] dark:text-white mb-4">Already have an account?</h2>
+            <a href="{% url 'login' %}" class="w-full">
+                <button class="w-full bg-white border border-[#333] py-2 px-4 rounded-full hover:bg-[#54C2F0] dark:hover:text-white font-medium text-lg text-[#111]">
+                    Login
+                </button>
+            </a>
+        </section>
+    </main>
 </div>
 {% endblock %}
 

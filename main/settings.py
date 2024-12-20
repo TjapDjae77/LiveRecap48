@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from decouple import config
 from pathlib import Path
 import os
+from os import getenv
+from dotenv import load_dotenv
+from urllib.parse import urlparse
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +54,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'accounts',
     'members',
+    'videos',
+    'manager',
+    'transcription',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -98,14 +106,16 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT', cast=int),
+        'NAME': tmpPostgres.path[1:],
+        'USER': tmpPostgres.username,
+        'PASSWORD': tmpPostgres.password,
+        'HOST': tmpPostgres.hostname,
+        'PORT': 5432,
     }
 }
 
@@ -144,10 +154,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/staticfiles/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# Tambahkan baris ini untuk mengatur STATIC_ROOT
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files
 MEDIA_URL = '/media/'
