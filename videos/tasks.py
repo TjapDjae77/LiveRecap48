@@ -5,6 +5,8 @@ from .models import Video
 from transcription.models import Transcription
 import logging
 import shutil
+import torch
+import gc
 
 def transcribe_video(video_id):
     video = Video.objects.get(id=video_id)
@@ -22,34 +24,29 @@ def transcribe_video(video_id):
 
         # Check FFmpeg dengan berbagai kemungkinan path
         ffmpeg_paths = [
-            'C:/ProgramData/chocolatey/bin/ffmpeg.exe',  # Path Chocolatey
             'ffmpeg',  # Path default
             shutil.which('ffmpeg')  # Cari di PATH sistem
         ]
 
-        ffmpeg_found = False
+        # Cek apakah FFmpeg tersedia
         for ffmpeg_path in ffmpeg_paths:
-            try:
-                if ffmpeg_path:
-                    print(f"Trying FFmpeg path: {ffmpeg_path}")
+            if ffmpeg_path:
+                try:
                     subprocess.run([ffmpeg_path, '-version'], capture_output=True, check=True)
-                    ffmpeg_found = True
                     print(f"FFmpeg found at: {ffmpeg_path}")
-                    
-                    # Set environment variable untuk FFmpeg
-                    os.environ["PATH"] = os.path.dirname(ffmpeg_path) + os.pathsep + os.environ["PATH"]
                     break
-            except Exception as e:
-                print(f"Failed with path {ffmpeg_path}: {str(e)}")
-                continue
+                except subprocess.CalledProcessError:
+                    print(f"Failed with path {ffmpeg_path}: {e}")
 
-        if not ffmpeg_found:
-            raise Exception("FFmpeg not found in any expected location")
+        # Bersihkan cache CUDA jika menggunakan GPU
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            
+        # Panggil garbage collector sebelum loading model
+        gc.collect()
         
-        print(f"FFmpeg path: {ffmpeg_path}")
-        
-        # Load model Whisper
-        model = whisper.load_model("base")
+        # Load model dengan optimasi memori
+        model = whisper.load_model("tiny", device="cpu")  # Force CPU untuk menghindari masalah CUDA
 
         print(f"berhasil load model whisper {model}")
 
@@ -60,7 +57,7 @@ def transcribe_video(video_id):
             str(video.audio_url.path),
             language="id",  # Set bahasa ke Indonesian
             task="transcribe",  # Pastikan task adalah transcribe
-            fp16=False  # Gunakan FP32 untuk menghindari warning
+            fp16=True # Gunakan FP32 untuk menghindari warning
         )
 
         print(f"berhasil transcribe")
@@ -85,3 +82,7 @@ def transcribe_video(video_id):
         video.transcription_status = 'failed'
         video.save()
         raise e
+    finally:
+        # Bersihkan model dari memori setelah selesai
+        del model
+        gc.collect()

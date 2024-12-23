@@ -4,6 +4,9 @@ FROM python:3.12-slim
 # Set working directory di dalam container
 WORKDIR /app
 
+# Instal FFmpeg
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Salin file requirements.txt
 COPY requirements.txt .
 

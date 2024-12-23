@@ -26,11 +26,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('allauth.urls')),
+    path('api/', include('api.urls')),
     path("logout/", auth_views.LogoutView.as_view(next_page="/"), name="logout"),
     path('members/', include('members.urls')),
     path('manage/', include('manager.urls')),
     path('videos/', include('videos.urls')),
 ]
 
-if settings.DEBUG:  # Hanya untuk tahap development
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
